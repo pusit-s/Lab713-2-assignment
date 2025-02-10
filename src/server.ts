@@ -2,6 +2,8 @@ import express, { Request, Response } from 'express';
 const app = express();
 const port = 3000;
 
+app.use(express.json());
+
 app.get('/', (req: Request, res: Response) => {
     res.send('Welcome to Library!');
     });
@@ -29,6 +31,21 @@ app.get('/books', (req: Request, res: Response) => {
         res.json(books);
         }
     
+    });
+
+app.post('/books', (req: Request, res: Response) => {
+        const newBook: Event = req.body;
+    
+        const existingBookIndex = books.findIndex(book => book.id === newBook.id);
+    
+        if (existingBookIndex !== -1) {
+            books[existingBookIndex] = { ...books[existingBookIndex], ...newBook };
+            res.json({ message: 'Event updated successfully', book: books[existingBookIndex] });
+        } else {
+            newBook.id = books.length + 1;
+            books.push(newBook);
+            res.json({ message: 'Event created successfully', book: newBook });
+        }
     });
 
 interface Event {
