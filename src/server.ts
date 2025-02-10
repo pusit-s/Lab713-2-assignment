@@ -11,7 +11,14 @@ app.listen(port, () => {
     });
 
 app.get('/books', (req: Request, res: Response) => {
-    res.json(books);
+    if (req.query.title) {
+        const startTitle = req.query.title as string;
+        const filteredBooks = books.filter((book) => book.title.toLowerCase().startsWith(startTitle.toLowerCase()));
+        res.json(filteredBooks);
+        } else {
+        res.json(books);
+        }
+    
     });
 
 interface Event {
