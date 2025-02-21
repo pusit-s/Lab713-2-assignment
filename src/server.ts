@@ -14,9 +14,9 @@ app.listen(port, () => {
 
 app.get('/books/:id', (req: Request, res: Response) => {
     const bookId = parseInt(req.params.id);
-    const book = books.find((book) => book.id === bookId);
-    if (book) {
-        res.json(book);
+    const filteredBooks = getBookById(bookId);
+    if (filteredBooks) {
+        res.json(filteredBooks);
         } else {
         res.status(404).send('Book not found');
         }
@@ -25,30 +25,49 @@ app.get('/books/:id', (req: Request, res: Response) => {
 app.get('/books', (req: Request, res: Response) => {
     if (req.query.title) {
         const startTitle = req.query.title as string;
-        const filteredBooks = books.filter((book) => book.title.toLowerCase().startsWith(startTitle.toLowerCase()));
+        const filteredBooks = getBooksByTitleStart(startTitle);
         res.json(filteredBooks);
-        } else {
-        res.json(books);
-        }
-    
-    });
+    } else {
+        res.json(getAllBooks());
+    }
+});
 
 app.post('/books', (req: Request, res: Response) => {
-        const newBook: Event = req.body;
-    
-        const existingBookIndex = books.findIndex(book => book.id === newBook.id);
-    
-        if (existingBookIndex !== -1) {
-            books[existingBookIndex] = { ...books[existingBookIndex], ...newBook };
-            res.json({ message: 'Event updated successfully', book: books[existingBookIndex] });
-        } else {
-            newBook.id = books.length + 1;
-            books.push(newBook);
-            res.json({ message: 'Event created successfully', book: newBook });
-        }
-    });
+    const newBook: Book = req.body;
+    const response = updateInsertBook(newBook);
+    res.json(response);
+});
 
-interface Event {
+function getBookById(bookId: number): Book | undefined {
+    return books.find((book) => book.id === bookId);
+}
+
+function getBooksByTitleStart(startTitle: string): Book[] {
+    return books.filter((book) => book.title.toLowerCase().startsWith(startTitle.toLowerCase()));
+}
+
+function getAllBooks(): Book[] {
+    return books;
+}
+
+function updateInsertBook(newBook: Book): { message: string; book: Book } {
+    const existingBookIndex = findBookIndexById(newBook.id);
+
+    if (existingBookIndex !== -1) {
+        books[existingBookIndex] = { ...books[existingBookIndex], ...newBook };
+        return { message: 'Book updated successfully', book: books[existingBookIndex] };
+    } else {
+        newBook.id = books.length + 1;
+        books.push(newBook);
+        return { message: 'Book created successfully', book: newBook };
+    }
+}
+
+function findBookIndexById(bookId: number): number {
+    return books.findIndex((book) => book.id === bookId);
+}
+
+interface Book {
     id: number
     title: string;
     author_name: string;
@@ -56,7 +75,7 @@ interface Event {
     groups: string[];
 }
 
-const books: Event[] = [
+const books: Book[] = [
     {
         id: 1,
         title: 'To Kill a Mockingbird',
