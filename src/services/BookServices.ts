@@ -1,20 +1,18 @@
 import type { Book } from '../models/Book';
-import { getAllBooks as allBooks, getBookById as bookById, 
-    getBooksByTitleStart as booksByTitleStart, 
-    updateInsertBook as upInBook } from '../repository/BookRepository';
+import * as repo from '../repository/BookRepository';
 
 export function getBookById(bookId: number): Promise<Book | undefined> {
-    return bookById(bookId);
+    return repo.getBookById(bookId);
 }
 
 export function getBooksByTitleStart(startTitle: string): Promise<Book[]> {
-    return booksByTitleStart(startTitle);
+    return repo.getBooksByTitleStart(startTitle);
 }
 
 export function getAllBooks(): Promise<Book[]> {
-    return allBooks();
+    return repo.getAllBooks();
 }
 
 export function updateInsertBook(newBook: Book): Promise<{ message: string; book: Book }> {
-    return upInBook(newBook);
+    return repo.updateInsertBook(newBook);
 }
