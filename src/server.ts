@@ -12,30 +12,30 @@ app.get('/', (req: Request, res: Response) => {
 
 app.listen(port, () => {
     console.log(`Server started at http://localhost:${port}`);
-    });
+});
 
-app.get('/books/:id', (req: Request, res: Response) => {
-    const bookId = parseInt(req.params.id);
-    const filteredBooks = getBookById(bookId);
-    if (filteredBooks) {
-        res.json(filteredBooks);
-        } else {
-        res.status(404).send('Book not found');
-        }
-    });
-
-app.get('/books', (req: Request, res: Response) => {
+app.get('/books', async (req: Request, res: Response) => {
     if (req.query.title) {
         const startTitle = req.query.title as string;
-        const filteredBooks = getBooksByTitleStart(startTitle);
+        const filteredBooks = await getBooksByTitleStart(startTitle);
         res.json(filteredBooks);
     } else {
-        res.json(getAllBooks());
+        res.json(await getAllBooks());
     }
 });
 
-app.post('/books', (req: Request, res: Response) => {
+app.get('/books/:id', async (req: Request, res: Response) => {
+    const bookId = parseInt(req.params.id);
+    const filteredBooks = await getBookById(bookId);
+    if (filteredBooks) {
+        res.json(filteredBooks);
+    } else {
+        res.status(404).send('Book not found');
+    }
+});
+
+app.post('/books', async (req: Request, res: Response) => {
     const newBook: Book = req.body;
-    const response = updateInsertBook(newBook);
+    const response = await updateInsertBook(newBook);
     res.json(response);
 });

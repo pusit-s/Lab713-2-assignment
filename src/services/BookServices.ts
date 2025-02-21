@@ -1,30 +1,33 @@
-export function getBookById(bookId: number): Book | undefined {
-    return books.find((book) => book.id === bookId);
+export function getBookById(bookId: number): Promise<Book | undefined> {
+    const booksById = books.find((book) => book.id === bookId)
+    return Promise.resolve(booksById);
 }
 
-export function getBooksByTitleStart(startTitle: string): Book[] {
-    return books.filter((book) => book.title.toLowerCase().startsWith(startTitle.toLowerCase()));
+export function getBooksByTitleStart(startTitle: string): Promise<Book[]> {
+    const filteredBooks = books.filter((book) => book.title.toLowerCase().startsWith(startTitle.toLowerCase()));
+    return Promise.resolve(filteredBooks);
 }
 
-export function getAllBooks(): Book[] {
-    return books;
+export function getAllBooks(): Promise<Book[]> {
+    return Promise.resolve(books);
 }
 
-export function updateInsertBook(newBook: Book): { message: string; book: Book } {
-    const existingBookIndex = findBookIndexById(newBook.id);
+export function findBookIndexById(bookId: number): Promise<number> {
+    const index = books.findIndex((book) => book.id === bookId);
+    return Promise.resolve(index);
+}
+
+export function updateInsertBook(newBook: Book): Promise<{ message: string; book: Book }> {
+    const existingBookIndex = books.findIndex((book) => book.id === newBook.id);
 
     if (existingBookIndex !== -1) {
         books[existingBookIndex] = { ...books[existingBookIndex], ...newBook };
-        return { message: 'Book updated successfully', book: books[existingBookIndex] };
+        return Promise.resolve({ message: 'Book updated successfully', book: books[existingBookIndex] });
     } else {
         newBook.id = books.length + 1;
         books.push(newBook);
-        return { message: 'Book created successfully', book: newBook };
+        return Promise.resolve({ message: 'Book created successfully', book: newBook });
     }
-}
-
-export function findBookIndexById(bookId: number): number {
-    return books.findIndex((book) => book.id === bookId);
 }
 
 export interface Book {
