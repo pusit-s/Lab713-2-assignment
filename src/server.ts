@@ -1,5 +1,5 @@
 import express, { Request, Response } from 'express';
-import { Book } from './services/BookServices';
+import { Book } from './models/Book';
 import { getBookById, getBooksByTitleStart, getAllBooks, updateInsertBook } from './services/BookServices';
 const app = express();
 const port = 3000;
