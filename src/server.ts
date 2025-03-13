@@ -54,10 +54,10 @@ app.post('/upload', upload.single('file'), async(req: Request, res: Response) =>
         }
 
         const bucket = 'images';
-        const filePath = `uploads/${file.originalname}`;
-        await uploadFile(bucket, filePath, file);
-        
-        res.status(200).send('File uploaded successfully');
+        const filePath = `uploads`;
+
+        const outputUrl = await uploadFile(bucket, filePath, file);
+        res.status(200).send(outputUrl);
     } catch (error) {
         res.status(500).send('Error uploading file');
     }
