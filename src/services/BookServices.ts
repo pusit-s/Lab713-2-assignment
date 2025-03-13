@@ -1,5 +1,5 @@
 import type { Book } from '../models/Book';
-import * as repo from '../repository/BookRepository';
+import * as repo from '../repository/BookRepositoryDb';
 
 export function getBookById(bookId: number): Promise<Book | undefined> {
     return repo.getBookById(bookId);
