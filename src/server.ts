@@ -3,11 +3,12 @@ import { Book } from './models/Book';
 import { getBookById, getBooksByTitleStart, getAllBooks, updateInsertBook } from './services/BookServices';
 import multer from 'multer';
 import { uploadFile } from './services/UploadFileService';
+import dotenv from "dotenv";
 
+dotenv.config();
 const app = express();
 const port = 3000;
 const upload = multer({storage: multer.memoryStorage()});
-
 
 app.use(express.json());
 
@@ -53,8 +54,13 @@ app.post('/upload', upload.single('file'), async(req: Request, res: Response) =>
             return;
         }
 
-        const bucket = 'images';
-        const filePath = `uploads`;
+        const bucket = process.env.SUPABASE_BUCKET_NAME
+        const filePath = process.env.UPLOAD_DIR
+
+        if (!bucket || !filePath) {
+            res.status(500).send('Missing environment variables');
+            return;
+        }
 
         const outputUrl = await uploadFile(bucket, filePath, file);
         res.status(200).send(outputUrl);

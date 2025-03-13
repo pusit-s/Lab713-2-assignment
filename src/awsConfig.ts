@@ -1,12 +1,23 @@
 import { S3Client } from "@aws-sdk/client-s3";
+import dotenv from "dotenv";
+dotenv.config();
+
+const accessKeyId = process.env.AWS_ACCESS_KEY_ID;
+const secretAccessKey = process.env.AWS_SECRET_ACCESS_KEY;
+const endpoint = process.env.SUPABASE_ENDPOINT_URL;
+const region = process.env.AWS_REGION;
+
+if (!accessKeyId || !secretAccessKey || !endpoint || !region) {
+    throw new Error("Missing required environment variables for AWS S3 configuration");
+}
 
 const s3Client = new S3Client({
     credentials: {
-        accessKeyId: "d79f65b0dd91f86651d3a2dc49e0afc5",
-        secretAccessKey: "a1721148e83f156dc8bfa015eff02343d7d1d0ba40377747cbbfa9277036a98f"
+        accessKeyId: accessKeyId,
+        secretAccessKey: secretAccessKey
     },
-    endpoint: "https://jevhdzsjeoykeblpcyph.supabase.co/storage/v1/s3",
-    region: "ap-southeast-1",
+    endpoint: endpoint,
+    region: region,
     forcePathStyle: true
 });
 
